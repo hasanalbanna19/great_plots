@@ -1,0 +1,17 @@
+# read the data from directory and see data summary
+distpop<- read.csv('bd_dist_pop.csv')
+
+#see your data for your convenience to use it
+summary(distpop)
+head(distpop)
+
+#run the library to activate the ggplot2 package
+
+
+library(ggplot2)          
+gg <- ggplot(distpop, aes(x=Area, y=Population)) +        #firstly define dataset, x and y axis by ggplot commad
+  geom_point(aes(col=Division), size=3) +                  #set color to vary based on division categories using geom_point
+  geom_smooth(method="lm", col="firebrick", size=1) +      #if you want to fit a line use geom_smooth
+  coord_cartesian(xlim=c(0, 7000), ylim=c(0, 15000)) +     #fix the x and y coordinate boundaries, specially when there are some exteme outliers
+  labs(title="Area Vs Population", subtitle="Bangladesh District Demographics", y="Population (Thousand)", x="Area (Square Kilometer)", caption="Data source: 2011 Population & Housing Census Preliminary Results, Bangladesh Bureau of Statistics")
+plot(gg)
