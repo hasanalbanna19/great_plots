@@ -1,0 +1,19 @@
+library(plotly)
+library(dplyr)
+
+library(readxl)
+agedata<- read_excel('histogram_agegroup_worlddata.xlsx', sheet='Sheet3')
+p <- ggplot(agedata, aes(x = Country, y = PopPercent,fill = AgeGroup)) + 
+  ggtitle("Distribution of population by age group")
+p <- p + geom_bar(stat = "identity", position = "stack")
+
+myplot<-ggplotly(p)
+myplot
+
+#to save the result as an interactive image as html
+install.packages("htmlwidgets")
+library(htmlwidgets)
+dir.create("E:\\R plots")
+
+saveWidget(myplot, 
+           file="E:\\R plots\\histogram_agegroup_worlddata.html")
