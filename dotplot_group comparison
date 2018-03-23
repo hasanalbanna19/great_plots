@@ -1,0 +1,34 @@
+#reading data from excel file
+library(readxl)
+mydata<- read_excel('dotplot_withMean&SD_CKDdata.xlsx', sheet='Sheet1')
+
+#drawing basic dotplot
+library(ggplot2)
+myplot<- ggplot(mydata, aes(x=Group, y=BMI)) + 
+  geom_dotplot(binaxis='y', stackdir='center',
+               stackratio=3, dotsize=0.5)
+myplot
+
+#to draw boxplot around the dots
+myboxplot<- ggplot(mydata, aes(x=Group, y=BMI)) + 
+  geom_dotplot(binaxis='y', stackdir='center') +
+  geom_boxplot()
+myboxplot
+
+#to add mean and Standard deviation
+mysdplot <- myplot + stat_summary(fun.data=mean_sdl, fun.args = list(mult=1), 
+                             geom="pointrange", color="blue")
+mysdplot
+
+# Now compare between groups with P value
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("kassambara/ggpubr")
+library(ggpubr)
+
+my_comparisons <- list( c("Case", "Control"))   #Specify the comparisons you want
+myPvalue_plot<- ggboxplot(mydata, x = "Group", y = "Age",
+          color = "Group", palette = "jco", add = "jitter", legend = "none") + 
+  stat_compare_means(label = "p.signif", method = "t.test",
+                     ref.group = "Control" , comparisons = my_comparisons)+  # Add pairwise comparisons p-value
+  stat_compare_means(method = "anova", label.y =100)                 # Add global anova p-value
+myPvalue_plot
